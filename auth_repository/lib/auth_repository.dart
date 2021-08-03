@@ -1,7 +1,10 @@
 library auth_repository;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
+abstract class AuthRepository {
+  Future<void> loginWithGoogle();
+  Future<void> loginWithFacebook();
+  Future<void> loginWithEmailAndPassword(String email, String password);
+  Future<void> registerWithEmailAndPassword(String email, String password);
+  Future<void> recoverPassword(String email);
+  Future<void> logout();
 }
