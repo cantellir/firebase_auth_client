@@ -2,6 +2,7 @@ import 'package:auth_repository/auth_exception.dart';
 import 'package:auth_repository/auth_repository.dart';
 import 'package:auth_repository/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
   final FirebaseAuth _auth;
@@ -17,14 +18,21 @@ class FirebaseAuthRepository implements AuthRepository {
 
   @override
   Future<void> loginWithFacebook() {
-    // TODO: implement loginWithFacebook
-    throw UnimplementedError();
+    return _doAuth(() async {
+      // TODO: implement loginWithFacebook
+    });
   }
 
   @override
   Future<void> loginWithGoogle() {
-    // TODO: implement loginWithGoogle
-    throw UnimplementedError();
+    return _doAuth(() async {
+      GoogleSignIn googleSignIn = GoogleSignIn();
+      GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+      await _auth.signInWithCredential(credential);
+    });
   }
 
   @override
