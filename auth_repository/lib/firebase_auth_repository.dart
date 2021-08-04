@@ -42,9 +42,15 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> recoverPassword(String email) {
-    // TODO: implement recoverPassword
-    throw UnimplementedError();
+  Future<void> recoverPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return;
+    } on FirebaseAuthException catch (e) {
+      _rethrowException(e);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
