@@ -57,8 +57,6 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   _rethrowException(FirebaseAuthException e) {
-    String? error;
-
     switch (e.code) {
       case 'wrong-password':
         throw AuthPasswordException(Strings.validationInvalidPassword);
