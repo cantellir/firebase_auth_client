@@ -1,53 +1,61 @@
 import 'package:auth_repository/auth_exception.dart';
 import 'package:auth_repository/auth_repository.dart';
+import 'package:auth_repository/services/facebook_login_service.dart';
+import 'package:auth_repository/services/google_login_service.dart';
 import 'package:auth_repository/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
-  final FirebaseAuth _auth;
+  final FirebaseAuth auth;
+  final FacebookLoginService facebookLoginService;
+  final GoogleLoginService googleLoginService;
 
-  FirebaseAuthRepository(this._auth);
+  FirebaseAuthRepository(
+      {required this.auth,
+      required this.facebookLoginService,
+      required this.googleLoginService});
 
   @override
   Future<void> loginWithEmailAndPassword(String email, String password) {
     return _doAuth(() async {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      await auth.signInWithEmailAndPassword(email: email, password: password);
     });
   }
 
   @override
   Future<void> loginWithFacebook() {
     return _doAuth(() async {
-      final LoginResult facebookLogin = await FacebookAuth.instance.login();
+      final facebookLoginResult = await facebookLoginService.login();
+
       final AuthCredential credential =
-          FacebookAuthProvider.credential(facebookLogin.accessToken!.token);
-      await _auth.signInWithCredential(credential);
+          FacebookAuthProvider.credential(facebookLoginResult.token);
+      await auth.signInWithCredential(credential);
     });
   }
 
   @override
   Future<void> loginWithGoogle() {
     return _doAuth(() async {
-      GoogleSignIn googleSignIn = GoogleSignIn();
-      GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+      final googleLoginResult = await googleLoginService.login();
+
       final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-      await _auth.signInWithCredential(credential);
+          accessToken: googleLoginResult.token,
+          idToken: googleLoginResult.tokenId);
+
+      await auth.signInWithCredential(credential);
     });
   }
 
   @override
   Future<void> logout() async {
-    await _auth.signOut();
+    await auth.signOut();
   }
 
   @override
   Future<void> recoverPassword(String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email);
+      await auth.sendPasswordResetEmail(email: email);
       return;
     } on FirebaseAuthException catch (e) {
       _rethrowException(e);
@@ -59,7 +67,7 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   Future<void> registerWithEmailAndPassword(String email, String password) {
     return _doAuth(() async {
-      await _auth.createUserWithEmailAndPassword(
+      await auth.createUserWithEmailAndPassword(
           email: email, password: password);
     });
   }
