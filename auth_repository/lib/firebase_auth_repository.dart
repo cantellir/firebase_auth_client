@@ -4,7 +4,6 @@ import 'package:auth_repository/services/facebook_login_service.dart';
 import 'package:auth_repository/services/google_login_service.dart';
 import 'package:auth_repository/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
   final FirebaseAuth auth;
