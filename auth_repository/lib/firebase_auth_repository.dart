@@ -2,6 +2,7 @@ import 'package:auth_repository/auth_exception.dart';
 import 'package:auth_repository/auth_repository.dart';
 import 'package:auth_repository/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
@@ -19,7 +20,10 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   Future<void> loginWithFacebook() {
     return _doAuth(() async {
-      // TODO: implement loginWithFacebook
+      final LoginResult facebookLogin = await FacebookAuth.instance.login();
+      final AuthCredential credential =
+          FacebookAuthProvider.credential(facebookLogin.accessToken!.token);
+      await _auth.signInWithCredential(credential);
     });
   }
 
