@@ -18,6 +18,12 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   Future<void> loginWithEmailAndPassword(String email, String password) {
     return _doAuth(() async {
+      if (email.isEmpty) {
+        throw AuthEmailException(Strings.emptyEmail);
+      }
+      if (password.isEmpty) {
+        throw AuthPasswordException(Strings.emptyPassword);
+      }
       await auth.signInWithEmailAndPassword(email: email, password: password);
     });
   }
