@@ -1,13 +1,13 @@
 class Strings {
-  static final String validationInvalidPassword = 'validationInvalidPassword';
+  static final String invalidPassword = 'invalidPassword';
   static final String invalidEmail = 'invalidEmail';
   static final String emptyEmail = 'emptyEmail';
-  static final String validationUserNotFound = 'validationUserNotFound';
-  static final String invalidPasswordWeak = 'invalidPasswordWeak';
+  static final String userNotFound = 'userNotFound';
+  static final String passwordWeak = 'passwordWeak';
   static final String emptyPassword = 'emptyPassword';
-  static final String validationEmailInUse = 'validationEmailInUse';
-  static final String errorToManyRequest = 'errorToManyRequest';
-  static final String errorCheckConnection = 'errorCheckConnection';
-  static final String errorAccountExistsDiferentCredentials =
-      'errorAccountExistsDiferentCredentials';
+  static final String emailAlreadyInUse = 'emailAlreadyInUse';
+  static final String tooManyRequest = 'tooManyRequest';
+  static final String checkConnection = 'checkConnection';
+  static final String accountExistsWithDiferentCredentials =
+      'accountExistsWithDiferentCredentials';
 }

@@ -90,24 +90,36 @@ class FirebaseAuthRepository implements AuthRepository {
 
   _rethrowException(FirebaseAuthException e) {
     switch (e.code) {
-      case 'wrong-password':
-        throw AuthPasswordException(Strings.validationInvalidPassword);
-      case 'invalid-email':
+      case FirebaseExceptionCodes.invalidEmail:
         throw AuthEmailException(Strings.invalidEmail);
-      case 'user-not-found':
-        throw AuthEmailException(Strings.validationUserNotFound);
-      case 'weak-password':
-        throw AuthPasswordException(Strings.invalidPasswordWeak);
-      case 'email-already-in-use':
-        throw AuthEmailException(Strings.validationEmailInUse);
-      case 'too-many-requests':
-        throw AuthNetworkException(Strings.errorToManyRequest);
-      case 'network-request-failed':
-        throw AuthNetworkException(Strings.errorCheckConnection);
-      case 'account-exists-with-different-credential':
-        throw AuthException(Strings.errorAccountExistsDiferentCredentials);
+      case FirebaseExceptionCodes.userNotFound:
+        throw AuthEmailException(Strings.userNotFound);
+      case FirebaseExceptionCodes.emailAlreadyInUse:
+        throw AuthEmailException(Strings.emailAlreadyInUse);
+      case FirebaseExceptionCodes.wrongPassword:
+        throw AuthPasswordException(Strings.invalidPassword);
+      case FirebaseExceptionCodes.weakPassword:
+        throw AuthPasswordException(Strings.passwordWeak);
+      case FirebaseExceptionCodes.tooManyRequests:
+        throw AuthNetworkException(Strings.tooManyRequest);
+      case FirebaseExceptionCodes.networkRequestFailed:
+        throw AuthNetworkException(Strings.checkConnection);
+      case FirebaseExceptionCodes.accountExistsWithDifferentCredential:
+        throw AuthException(Strings.accountExistsWithDiferentCredentials);
       default:
         throw AuthException(e.message);
     }
   }
+}
+
+class FirebaseExceptionCodes {
+  static const wrongPassword = 'wrong-password';
+  static const invalidEmail = 'invalid-email';
+  static const userNotFound = 'user-not-found';
+  static const weakPassword = 'weak-password';
+  static const emailAlreadyInUse = 'email-already-in-use';
+  static const tooManyRequests = 'too-many-requests';
+  static const networkRequestFailed = 'network-request-failed';
+  static const accountExistsWithDifferentCredential =
+      'account-exists-with-different-credential';
 }

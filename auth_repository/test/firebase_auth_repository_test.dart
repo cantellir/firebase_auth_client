@@ -47,7 +47,9 @@ void main() {
       verifyNoMoreInteractions(auth);
     });
 
-    test('should trhow AuthEmailException if e-mail is empty', () async {
+    test(
+        'should trhow AuthEmailException with correct message if e-mail '
+        'is empty', () async {
       expect(
           () => sut.loginWithEmailAndPassword('', '123456'),
           throwsA(isA<AuthEmailException>()
@@ -56,13 +58,86 @@ void main() {
       verifyZeroInteractions(auth);
     });
 
-    test('should trhow AuthPasswordException if e-mail is empty', () async {
+    test(
+        'should trhow AuthPasswordException with correct message if e-mail '
+        'is empty', () async {
       expect(
           () => sut.loginWithEmailAndPassword('fake@mail.com', ''),
           throwsA(isA<AuthPasswordException>()
               .having((e) => e.error, 'message', Strings.emptyPassword)));
 
       verifyZeroInteractions(auth);
+    });
+
+    test(
+        'should throw AuthEmailException with correct message if firebase '
+        'throws invalid email', () async {
+      when(() => auth.signInWithEmailAndPassword(
+              email: any(named: 'email'), password: any(named: 'password')))
+          .thenThrow(
+              FirebaseAuthException(code: FirebaseExceptionCodes.invalidEmail));
+
+      expect(
+          () => sut.loginWithEmailAndPassword('invalidmail', 'password'),
+          throwsA(isA<AuthEmailException>()
+              .having((e) => e.error, 'message', Strings.invalidEmail)));
+    });
+
+    test(
+        'should throw AuthEmailException with correct message if firebase '
+        'throws user not found', () async {
+      when(() => auth.signInWithEmailAndPassword(
+              email: any(named: 'email'), password: any(named: 'password')))
+          .thenThrow(
+              FirebaseAuthException(code: FirebaseExceptionCodes.userNotFound));
+
+      expect(
+          () => sut.loginWithEmailAndPassword('fake@mail.com', 'password'),
+          throwsA(isA<AuthEmailException>()
+              .having((e) => e.error, 'message', Strings.userNotFound)));
+    });
+
+    test(
+        'should throw AuthEmailException with correct message if firebase '
+        'throws email already in use', () async {
+      when(() => auth.signInWithEmailAndPassword(
+              email: any(named: 'email'), password: any(named: 'password')))
+          .thenThrow(FirebaseAuthException(
+              code: FirebaseExceptionCodes.emailAlreadyInUse));
+
+      expect(
+          () => sut.loginWithEmailAndPassword('fake@mail.com', 'password'),
+          throwsA(isA<AuthEmailException>()
+              .having((e) => e.error, 'message', Strings.emailAlreadyInUse)));
+    });
+
+    test(
+        'should throw AuthPasswordException with correct message if firebase '
+        'throws wrong password', () async {
+      when(() =>
+          auth.signInWithEmailAndPassword(
+              email: any(named: 'email'),
+              password: any(named: 'password'))).thenThrow(
+          FirebaseAuthException(code: FirebaseExceptionCodes.wrongPassword));
+
+      expect(
+          () => sut.loginWithEmailAndPassword('fake@mail.com', 'password'),
+          throwsA(isA<AuthPasswordException>()
+              .having((e) => e.error, 'message', Strings.invalidPassword)));
+    });
+
+    test(
+        'should throw AuthPasswordException with correct message if firebase '
+        'throws weak password', () async {
+      when(() => auth.signInWithEmailAndPassword(
+              email: any(named: 'email'), password: any(named: 'password')))
+          .thenThrow(
+              FirebaseAuthException(code: FirebaseExceptionCodes.weakPassword));
+
+      expect(
+          () => sut.loginWithEmailAndPassword('fake@mail.com', 'password'),
+          throwsA(isA<AuthPasswordException>()
+              .having((e) => e.error, 'message', Strings.passwordWeak)));
     });
   });
 }
