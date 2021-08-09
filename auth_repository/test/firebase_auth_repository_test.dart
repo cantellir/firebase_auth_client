@@ -37,14 +37,14 @@ void main() {
     test('should call login with email and password with correct values',
         () async {
       when(() => auth.signInWithEmailAndPassword(
-          email: any(named: 'email'),
-          password: any(named: 'password'))).thenAnswer((_) async {
-        return UserCredentialMock();
-      });
+              email: any(named: 'email'), password: any(named: 'password')))
+          .thenAnswer((_) async => UserCredentialMock());
       await sut.loginWithEmailAndPassword('fake@mail.com', '123456');
 
       verify(() => auth.signInWithEmailAndPassword(
           email: 'fake@mail.com', password: '123456'));
+
+      verifyNoMoreInteractions(auth);
     });
 
     test('should trhow AuthEmailException if e-mail is empty', () async {
@@ -52,6 +52,8 @@ void main() {
           () => sut.loginWithEmailAndPassword('', '123456'),
           throwsA(isA<AuthEmailException>()
               .having((e) => e.error, 'message', Strings.emptyEmail)));
+
+      verifyZeroInteractions(auth);
     });
 
     test('should trhow AuthPasswordException if e-mail is empty', () async {
@@ -59,6 +61,8 @@ void main() {
           () => sut.loginWithEmailAndPassword('fake@mail.com', ''),
           throwsA(isA<AuthPasswordException>()
               .having((e) => e.error, 'message', Strings.emptyPassword)));
+
+      verifyZeroInteractions(auth);
     });
   });
 }
