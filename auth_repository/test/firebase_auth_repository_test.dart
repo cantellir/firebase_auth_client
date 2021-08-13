@@ -158,8 +158,9 @@ void main() {
 
       await sut.loginWithFacebook();
 
+      verify(() => facebookLoginService.login()).called(1);
+      verifyNoMoreInteractions(facebookLoginService);
       verify(() => auth.signInWithCredential(any())).called(1);
-
       verifyNoMoreInteractions(auth);
     });
 
@@ -183,6 +184,22 @@ void main() {
   });
 
   group('login with google', () {
+    test('should pass if there is no error', () async {
+      final GoogleLoginResult loginResult =
+          GoogleLoginResult(token: 'token', tokenId: 'tokenId');
+      when(() => googleLoginService.login())
+          .thenAnswer((_) async => loginResult);
+      when(() => auth.signInWithCredential(any()))
+          .thenAnswer((_) async => UserCredentialMock());
+
+      await sut.loginWithGoogle();
+
+      verify(() => googleLoginService.login()).called(1);
+      verifyNoMoreInteractions(googleLoginService);
+      verify(() => auth.signInWithCredential(any())).called(1);
+      verifyNoMoreInteractions(auth);
+    });
+
     test('should retrhow untracked exception if throws', () {
       when(() => googleLoginService.login()).thenThrow(Exception());
 

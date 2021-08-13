@@ -4,7 +4,10 @@ class GoogleLoginResult {
   final String? token;
   final String? tokenId;
 
-  GoogleLoginResult(this.token, this.tokenId);
+  GoogleLoginResult({
+    this.token,
+    this.tokenId,
+  });
 }
 
 class GoogleLoginService {
@@ -12,6 +15,9 @@ class GoogleLoginService {
     GoogleSignIn googleSignIn = GoogleSignIn();
     GoogleSignInAccount? googleUser = await googleSignIn.signIn();
     GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
-    return GoogleLoginResult(googleAuth.accessToken, googleAuth.idToken);
+    return GoogleLoginResult(
+      token: googleAuth.accessToken,
+      tokenId: googleAuth.idToken,
+    );
   }
 }
