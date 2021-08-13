@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auth_repository/auth_exception.dart';
 import 'package:auth_repository/auth_repository.dart';
 import 'package:auth_repository/firebase_auth_repository.dart';
@@ -19,8 +21,8 @@ class UserCredentialMock extends Mock implements UserCredential {}
 void main() {
   late AuthRepository sut;
   late FirebaseAuthMock auth;
-  FacebookLoginServiceMock facebookLoginService;
-  GoogleLoginServiceMock googleLoginService;
+  late FacebookLoginServiceMock facebookLoginService;
+  late GoogleLoginServiceMock googleLoginService;
 
   setUp(() {
     auth = FirebaseAuthMock();
@@ -42,14 +44,14 @@ void main() {
       await sut.loginWithEmailAndPassword('fake@mail.com', '123456');
 
       verify(() => auth.signInWithEmailAndPassword(
-          email: 'fake@mail.com', password: '123456'));
+          email: 'fake@mail.com', password: '123456')).called(1);
 
       verifyNoMoreInteractions(auth);
     });
 
     test(
         'should trhow AuthEmailException with correct message if e-mail '
-        'is empty', () async {
+        'is empty', () {
       expect(
           () => sut.loginWithEmailAndPassword('', '123456'),
           throwsA(isA<AuthEmailException>()
@@ -60,7 +62,7 @@ void main() {
 
     test(
         'should trhow AuthPasswordException with correct message if e-mail '
-        'is empty', () async {
+        'is empty', () {
       expect(
           () => sut.loginWithEmailAndPassword('fake@mail.com', ''),
           throwsA(isA<AuthPasswordException>()
@@ -71,7 +73,7 @@ void main() {
 
     test(
         'should throw AuthEmailException with correct message if firebase '
-        'throws invalid email', () async {
+        'throws invalid email', () {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
           .thenThrow(
@@ -85,7 +87,7 @@ void main() {
 
     test(
         'should throw AuthEmailException with correct message if firebase '
-        'throws user not found', () async {
+        'throws user not found', () {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
           .thenThrow(
@@ -99,7 +101,7 @@ void main() {
 
     test(
         'should throw AuthEmailException with correct message if firebase '
-        'throws email already in use', () async {
+        'throws email already in use', () {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
           .thenThrow(FirebaseAuthException(
@@ -113,7 +115,7 @@ void main() {
 
     test(
         'should throw AuthPasswordException with correct message if firebase '
-        'throws wrong password', () async {
+        'throws wrong password', () {
       when(() =>
           auth.signInWithEmailAndPassword(
               email: any(named: 'email'),
@@ -128,7 +130,7 @@ void main() {
 
     test(
         'should throw AuthPasswordException with correct message if firebase '
-        'throws weak password', () async {
+        'throws weak password', () {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
           .thenThrow(
@@ -138,6 +140,35 @@ void main() {
           () => sut.loginWithEmailAndPassword('fake@mail.com', 'password'),
           throwsA(isA<AuthPasswordException>()
               .having((e) => e.error, 'message', Strings.passwordWeak)));
+    });
+  });
+
+  group('login with facebook', () {
+    test(
+        'should throw AuthException with correct message if throws '
+        'account exists with different credential', () {
+      when(() => facebookLoginService.login()).thenThrow(FirebaseAuthException(
+          code: FirebaseExceptionCodes.accountExistsWithDifferentCredential));
+
+      expect(
+          () => sut.loginWithFacebook(),
+          throwsA(isA<AuthException>().having((e) => e.error, 'message',
+              Strings.accountExistsWithDiferentCredentials)));
+    });
+
+    test('should rethrow untracked exception if throws', () {
+      when(() => facebookLoginService.login()).thenThrow(Exception());
+
+      expect(() => sut.loginWithFacebook(), throwsA(isA<Exception>()));
+      // verifyNoMoreInteractions(facebookLoginService);
+    });
+  });
+
+  group('login with google', () {
+    test('should retrhow untracked exception if throws', () {
+      when(() => googleLoginService.login()).thenThrow(Exception());
+
+      expect(() => sut.loginWithGoogle(), throwsA(isA<Exception>()));
     });
   });
 }
