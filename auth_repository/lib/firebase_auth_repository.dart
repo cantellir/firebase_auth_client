@@ -78,6 +78,12 @@ class FirebaseAuthRepository implements AuthRepository {
     required String password,
   }) {
     return _doAuth(() async {
+      if (email.isEmpty) {
+        throw AuthEmailException(Strings.emptyEmail);
+      }
+      if (password.isEmpty) {
+        throw AuthPasswordException(Strings.emptyPassword);
+      }
       await auth.createUserWithEmailAndPassword(
           email: email, password: password);
     });

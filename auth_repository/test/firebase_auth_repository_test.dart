@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auth_repository/auth_exception.dart';
 import 'package:auth_repository/auth_repository.dart';
 import 'package:auth_repository/firebase_auth_repository.dart';
@@ -172,6 +170,52 @@ void main() {
     });
   });
 
+  group('register with email and password', () {
+    test('should pass with correct email and password if no error occurs',
+        () async {
+      when(() => auth.createUserWithEmailAndPassword(
+              email: any(named: 'email'), password: any(named: 'password')))
+          .thenAnswer((_) async => UserCredentialMock());
+      await sut.registerWithEmailAndPassword(
+        email: 'fake@mail.com',
+        password: '123456',
+      );
+
+      verify(() => auth.createUserWithEmailAndPassword(
+          email: 'fake@mail.com', password: '123456')).called(1);
+
+      verifyNoMoreInteractions(auth);
+    });
+
+    test(
+        'should trhow AuthEmailException with correct message if e-mail '
+        'is empty', () {
+      expect(
+          () => sut.registerWithEmailAndPassword(
+                email: '',
+                password: '123456',
+              ),
+          throwsA(isA<AuthEmailException>()
+              .having((e) => e.error, 'message', Strings.emptyEmail)));
+
+      verifyZeroInteractions(auth);
+    });
+
+    test(
+        'should trhow AuthPasswordException with correct message if e-mail '
+        'is empty', () {
+      expect(
+          () => sut.registerWithEmailAndPassword(
+                email: 'fake@mail.com',
+                password: '',
+              ),
+          throwsA(isA<AuthPasswordException>()
+              .having((e) => e.error, 'message', Strings.emptyPassword)));
+
+      verifyZeroInteractions(auth);
+    });
+  });
+
   group('login with facebook', () {
     test('should pass if no error occurs', () async {
       final FacebookLoginResult loginResult = FacebookLoginResult('token');
@@ -249,6 +293,43 @@ void main() {
 
       expect(() => sut.recoverPassword('fake@mail.com'),
           throwsA(isA<Exception>()));
+    });
+  });
+
+  group('connection error tests', () {
+    test(
+        'should throw AuthNetworkException with correct message if firebase '
+        'throws too many requests', () {
+      when(() =>
+          auth.signInWithEmailAndPassword(
+              email: any(named: 'email'),
+              password: any(named: 'password'))).thenThrow(
+          FirebaseAuthException(code: FirebaseExceptionCodes.tooManyRequests));
+
+      expect(
+          () => sut.loginWithEmailAndPassword(
+                email: 'fake@mail.com',
+                password: 'password',
+              ),
+          throwsA(isA<AuthNetworkException>()
+              .having((e) => e.error, 'message', Strings.tooManyRequest)));
+    });
+
+    test(
+        'should throw AuthNetworkException with correct message if firebase '
+        'throws network request failed', () {
+      when(() => auth.signInWithEmailAndPassword(
+              email: any(named: 'email'), password: any(named: 'password')))
+          .thenThrow(FirebaseAuthException(
+              code: FirebaseExceptionCodes.networkRequestFailed));
+
+      expect(
+          () => sut.loginWithEmailAndPassword(
+                email: 'fake@mail.com',
+                password: 'password',
+              ),
+          throwsA(isA<AuthNetworkException>()
+              .having((e) => e.error, 'message', Strings.checkConnection)));
     });
   });
 }
