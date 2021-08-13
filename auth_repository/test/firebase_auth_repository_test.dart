@@ -35,6 +35,11 @@ void main() {
         googleLoginService: googleLoginService);
   });
 
+  setUpAll(() {
+    registerFallbackValue(
+        AuthCredential(providerId: 'providerId', signInMethod: 'signInMethod'));
+  });
+
   group('login with email and password', () {
     test('should call login with email and password with correct values',
         () async {
@@ -144,6 +149,20 @@ void main() {
   });
 
   group('login with facebook', () {
+    test('should pass if there is no error', () async {
+      final FacebookLoginResult loginResult = FacebookLoginResult('token');
+      when(() => facebookLoginService.login())
+          .thenAnswer((_) async => loginResult);
+      when(() => auth.signInWithCredential(any()))
+          .thenAnswer((_) async => UserCredentialMock());
+
+      await sut.loginWithFacebook();
+
+      verify(() => auth.signInWithCredential(any())).called(1);
+
+      verifyNoMoreInteractions(auth);
+    });
+
     test(
         'should throw AuthException with correct message if throws '
         'account exists with different credential', () {
@@ -160,7 +179,6 @@ void main() {
       when(() => facebookLoginService.login()).thenThrow(Exception());
 
       expect(() => sut.loginWithFacebook(), throwsA(isA<Exception>()));
-      // verifyNoMoreInteractions(facebookLoginService);
     });
   });
 
