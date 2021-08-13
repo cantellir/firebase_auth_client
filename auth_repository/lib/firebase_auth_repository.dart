@@ -16,7 +16,10 @@ class FirebaseAuthRepository implements AuthRepository {
       required this.googleLoginService});
 
   @override
-  Future<void> loginWithEmailAndPassword(String email, String password) {
+  Future<void> loginWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) {
     return _doAuth(() async {
       if (email.isEmpty) {
         throw AuthEmailException(Strings.emptyEmail);
@@ -70,7 +73,10 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> registerWithEmailAndPassword(String email, String password) {
+  Future<void> registerWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) {
     return _doAuth(() async {
       await auth.createUserWithEmailAndPassword(
           email: email, password: password);

@@ -41,12 +41,15 @@ void main() {
   });
 
   group('login with email and password', () {
-    test('should call login with email and password with correct values',
+    test('should pass with correct email and password if no error occurs',
         () async {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
           .thenAnswer((_) async => UserCredentialMock());
-      await sut.loginWithEmailAndPassword('fake@mail.com', '123456');
+      await sut.loginWithEmailAndPassword(
+        email: 'fake@mail.com',
+        password: '123456',
+      );
 
       verify(() => auth.signInWithEmailAndPassword(
           email: 'fake@mail.com', password: '123456')).called(1);
@@ -58,7 +61,10 @@ void main() {
         'should trhow AuthEmailException with correct message if e-mail '
         'is empty', () {
       expect(
-          () => sut.loginWithEmailAndPassword('', '123456'),
+          () => sut.loginWithEmailAndPassword(
+                email: '',
+                password: '123456',
+              ),
           throwsA(isA<AuthEmailException>()
               .having((e) => e.error, 'message', Strings.emptyEmail)));
 
@@ -69,7 +75,10 @@ void main() {
         'should trhow AuthPasswordException with correct message if e-mail '
         'is empty', () {
       expect(
-          () => sut.loginWithEmailAndPassword('fake@mail.com', ''),
+          () => sut.loginWithEmailAndPassword(
+                email: 'fake@mail.com',
+                password: '',
+              ),
           throwsA(isA<AuthPasswordException>()
               .having((e) => e.error, 'message', Strings.emptyPassword)));
 
@@ -85,7 +94,10 @@ void main() {
               FirebaseAuthException(code: FirebaseExceptionCodes.invalidEmail));
 
       expect(
-          () => sut.loginWithEmailAndPassword('invalidmail', 'password'),
+          () => sut.loginWithEmailAndPassword(
+                email: 'invalidmail',
+                password: 'password',
+              ),
           throwsA(isA<AuthEmailException>()
               .having((e) => e.error, 'message', Strings.invalidEmail)));
     });
@@ -99,7 +111,10 @@ void main() {
               FirebaseAuthException(code: FirebaseExceptionCodes.userNotFound));
 
       expect(
-          () => sut.loginWithEmailAndPassword('fake@mail.com', 'password'),
+          () => sut.loginWithEmailAndPassword(
+                email: 'fake@mail.com',
+                password: 'password',
+              ),
           throwsA(isA<AuthEmailException>()
               .having((e) => e.error, 'message', Strings.userNotFound)));
     });
@@ -113,7 +128,10 @@ void main() {
               code: FirebaseExceptionCodes.emailAlreadyInUse));
 
       expect(
-          () => sut.loginWithEmailAndPassword('fake@mail.com', 'password'),
+          () => sut.loginWithEmailAndPassword(
+                email: 'fake@mail.com',
+                password: 'password',
+              ),
           throwsA(isA<AuthEmailException>()
               .having((e) => e.error, 'message', Strings.emailAlreadyInUse)));
     });
@@ -128,7 +146,10 @@ void main() {
           FirebaseAuthException(code: FirebaseExceptionCodes.wrongPassword));
 
       expect(
-          () => sut.loginWithEmailAndPassword('fake@mail.com', 'password'),
+          () => sut.loginWithEmailAndPassword(
+                email: 'fake@mail.com',
+                password: 'password',
+              ),
           throwsA(isA<AuthPasswordException>()
               .having((e) => e.error, 'message', Strings.invalidPassword)));
     });
@@ -142,14 +163,17 @@ void main() {
               FirebaseAuthException(code: FirebaseExceptionCodes.weakPassword));
 
       expect(
-          () => sut.loginWithEmailAndPassword('fake@mail.com', 'password'),
+          () => sut.loginWithEmailAndPassword(
+                email: 'fake@mail.com',
+                password: 'password',
+              ),
           throwsA(isA<AuthPasswordException>()
               .having((e) => e.error, 'message', Strings.passwordWeak)));
     });
   });
 
   group('login with facebook', () {
-    test('should pass if there is no error', () async {
+    test('should pass if no error occurs', () async {
       final FacebookLoginResult loginResult = FacebookLoginResult('token');
       when(() => facebookLoginService.login())
           .thenAnswer((_) async => loginResult);
@@ -184,7 +208,7 @@ void main() {
   });
 
   group('login with google', () {
-    test('should pass if there is no error', () async {
+    test('should pass if no error occurs', () async {
       final GoogleLoginResult loginResult =
           GoogleLoginResult(token: 'token', tokenId: 'tokenId');
       when(() => googleLoginService.login())
@@ -204,6 +228,27 @@ void main() {
       when(() => googleLoginService.login()).thenThrow(Exception());
 
       expect(() => sut.loginWithGoogle(), throwsA(isA<Exception>()));
+    });
+  });
+
+  group('recover password tests', () {
+    test('should pass with correct email if no error occurs', () async {
+      when(() => auth.sendPasswordResetEmail(email: any(named: 'email')))
+          .thenAnswer((_) async => null);
+
+      await auth.sendPasswordResetEmail(email: 'fake@mail.com');
+
+      verify(() => auth.sendPasswordResetEmail(email: 'fake@mail.com'))
+          .called(1);
+      verifyNoMoreInteractions(auth);
+    });
+
+    test('should retrhow untracked exception if throws', () {
+      when(() => auth.sendPasswordResetEmail(email: any(named: 'email')))
+          .thenThrow(Exception());
+
+      expect(() => sut.recoverPassword('fake@mail.com'),
+          throwsA(isA<Exception>()));
     });
   });
 }
