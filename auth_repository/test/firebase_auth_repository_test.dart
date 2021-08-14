@@ -276,6 +276,17 @@ void main() {
   });
 
   group('recover password tests', () {
+    test(
+        'should trhow AuthEmailException with correct message if e-mail '
+        'is empty', () {
+      expect(
+          () => sut.recoverPassword(''),
+          throwsA(isA<AuthEmailException>()
+              .having((e) => e.error, 'message', Strings.emptyEmail)));
+
+      verifyZeroInteractions(auth);
+    });
+
     test('should pass with correct email if no error occurs', () async {
       when(() => auth.sendPasswordResetEmail(email: any(named: 'email')))
           .thenAnswer((_) async => null);
