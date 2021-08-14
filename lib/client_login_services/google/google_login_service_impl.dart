@@ -1,18 +1,12 @@
+import 'package:auth_repository/client_login_services/google/google_login_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class GoogleLoginResult {
-  final String? token;
-  final String? tokenId;
+class GoogleLoginServiceImpl implements GoogleLoginService {
+  final GoogleSignIn googleSignIn;
 
-  GoogleLoginResult({
-    this.token,
-    this.tokenId,
-  });
-}
+  GoogleLoginServiceImpl(this.googleSignIn);
 
-class GoogleLoginService {
   Future<GoogleLoginResult> login() async {
-    GoogleSignIn googleSignIn = GoogleSignIn();
     GoogleSignInAccount? googleUser = await googleSignIn.signIn();
     GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
     return GoogleLoginResult(

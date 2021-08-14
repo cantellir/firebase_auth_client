@@ -1,8 +1,8 @@
 import 'package:auth_repository/auth_exception.dart';
 import 'package:auth_repository/auth_repository.dart';
 import 'package:auth_repository/firebase_auth_repository.dart';
-import 'package:auth_repository/services/facebook_login_service.dart';
-import 'package:auth_repository/services/google_login_service.dart';
+import 'package:auth_repository/client_login_services/facebook/facebook_login_service.dart';
+import 'package:auth_repository/client_login_services/google/google_login_service.dart';
 import 'package:auth_repository/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
