@@ -1,8 +1,4 @@
-class FacebookLoginResult {
-  final String token;
-
-  FacebookLoginResult(this.token);
-}
+import 'facebook_login_result.dart';
 
 abstract class FacebookLoginService {
   Future<FacebookLoginResult> login();

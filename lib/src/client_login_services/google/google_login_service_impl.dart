@@ -1,13 +1,15 @@
-import 'package:firebase_auth_client/src/client_login_services/google/google_login_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class GoogleLoginServiceImpl implements GoogleLoginService {
-  final GoogleSignIn googleSignIn;
+import 'google_login_result.dart';
+import 'google_login_service.dart';
 
-  GoogleLoginServiceImpl(this.googleSignIn);
+class GoogleLoginServiceImpl implements GoogleLoginService {
+  final GoogleSignIn _googleSignIn;
+
+  GoogleLoginServiceImpl(this._googleSignIn);
 
   Future<GoogleLoginResult> login() async {
-    GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
     GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
     return GoogleLoginResult(
       token: googleAuth.accessToken,

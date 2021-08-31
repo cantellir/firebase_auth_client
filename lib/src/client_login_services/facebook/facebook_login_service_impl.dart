@@ -1,13 +1,15 @@
-import 'package:firebase_auth_client/src/client_login_services/facebook/facebook_login_service.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
-class FacebookLoginServiceImpl implements FacebookLoginService {
-  final FacebookAuth facebookAuth;
+import 'facebook_login_result.dart';
+import 'facebook_login_service.dart';
 
-  FacebookLoginServiceImpl(this.facebookAuth);
+class FacebookLoginServiceImpl implements FacebookLoginService {
+  final FacebookAuth _facebookAuth;
+
+  FacebookLoginServiceImpl(this._facebookAuth);
 
   Future<FacebookLoginResult> login() async {
-    LoginResult facebookLogin = await facebookAuth.login();
+    LoginResult facebookLogin = await _facebookAuth.login();
     return FacebookLoginResult(facebookLogin.accessToken!.token);
   }
 }

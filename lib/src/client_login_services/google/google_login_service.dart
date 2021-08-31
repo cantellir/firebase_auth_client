@@ -1,12 +1,4 @@
-class GoogleLoginResult {
-  final String? token;
-  final String? tokenId;
-
-  GoogleLoginResult({
-    this.token,
-    this.tokenId,
-  });
-}
+import 'google_login_result.dart';
 
 abstract class GoogleLoginService {
   Future<GoogleLoginResult> login();

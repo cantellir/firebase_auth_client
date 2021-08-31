@@ -1,4 +1,6 @@
 import 'package:firebase_auth_client/src/auth_exception.dart';
+import 'package:firebase_auth_client/src/client_login_services/facebook/facebook_login_result.dart';
+import 'package:firebase_auth_client/src/client_login_services/google/google_login_result.dart';
 import 'package:firebase_auth_client/src/firebase_auth_client.dart';
 import 'package:firebase_auth_client/src/firebase_auth_client_impl.dart';
 import 'package:firebase_auth_client/src/client_login_services/facebook/facebook_login_service.dart';
