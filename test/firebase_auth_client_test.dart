@@ -1,6 +1,6 @@
 import 'package:auth_repository/auth_exception.dart';
-import 'package:auth_repository/auth_repository.dart';
-import 'package:auth_repository/firebase_auth_repository.dart';
+import 'package:auth_repository/firebase_auth_client.dart';
+import 'package:auth_repository/firebase_auth_client_impl.dart';
 import 'package:auth_repository/client_login_services/facebook/facebook_login_service.dart';
 import 'package:auth_repository/client_login_services/google/google_login_service.dart';
 import 'package:auth_repository/strings.dart';
@@ -17,7 +17,7 @@ class GoogleLoginServiceMock extends Mock implements GoogleLoginService {}
 class UserCredentialMock extends Mock implements UserCredential {}
 
 void main() {
-  late AuthRepository sut;
+  late FirebaseAuthClient sut;
   late FirebaseAuthMock auth;
   late FacebookLoginServiceMock facebookLoginService;
   late GoogleLoginServiceMock googleLoginService;
@@ -27,7 +27,7 @@ void main() {
     facebookLoginService = FacebookLoginServiceMock();
     googleLoginService = GoogleLoginServiceMock();
 
-    sut = FirebaseAuthRepository(
+    sut = FirebaseAuthClientImpl(
         auth: auth,
         facebookLoginService: facebookLoginService,
         googleLoginService: googleLoginService);

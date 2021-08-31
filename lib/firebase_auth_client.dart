@@ -1,6 +1,6 @@
 library auth_repository;
 
-abstract class AuthRepository {
+abstract class FirebaseAuthClient {
   Future<void> loginWithGoogle();
   Future<void> loginWithFacebook();
   Future<void> loginWithEmailAndPassword({

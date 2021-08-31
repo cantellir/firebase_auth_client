@@ -1,16 +1,16 @@
 import 'package:auth_repository/auth_exception.dart';
-import 'package:auth_repository/auth_repository.dart';
+import 'package:auth_repository/firebase_auth_client.dart';
 import 'package:auth_repository/client_login_services/facebook/facebook_login_service.dart';
 import 'package:auth_repository/client_login_services/google/google_login_service.dart';
 import 'package:auth_repository/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class FirebaseAuthRepository implements AuthRepository {
+class FirebaseAuthClientImpl implements FirebaseAuthClient {
   final FirebaseAuth auth;
   final FacebookLoginService facebookLoginService;
   final GoogleLoginService googleLoginService;
 
-  FirebaseAuthRepository(
+  FirebaseAuthClientImpl(
       {required this.auth,
       required this.facebookLoginService,
       required this.googleLoginService});
