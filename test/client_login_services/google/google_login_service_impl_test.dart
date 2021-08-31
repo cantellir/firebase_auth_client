@@ -1,5 +1,5 @@
-import 'package:auth_repository/client_login_services/google/google_login_service.dart';
-import 'package:auth_repository/client_login_services/google/google_login_service_impl.dart';
+import 'package:firebase_auth_client/client_login_services/google/google_login_service.dart';
+import 'package:firebase_auth_client/client_login_services/google/google_login_service_impl.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 

@@ -1,4 +1,4 @@
-import 'package:auth_repository/client_login_services/google/google_login_service.dart';
+import 'package:firebase_auth_client/client_login_services/google/google_login_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleLoginServiceImpl implements GoogleLoginService {

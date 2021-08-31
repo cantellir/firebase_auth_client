@@ -1,9 +1,9 @@
-import 'package:auth_repository/auth_exception.dart';
-import 'package:auth_repository/firebase_auth_client.dart';
-import 'package:auth_repository/firebase_auth_client_impl.dart';
-import 'package:auth_repository/client_login_services/facebook/facebook_login_service.dart';
-import 'package:auth_repository/client_login_services/google/google_login_service.dart';
-import 'package:auth_repository/strings.dart';
+import 'package:firebase_auth_client/auth_exception.dart';
+import 'package:firebase_auth_client/firebase_auth_client.dart';
+import 'package:firebase_auth_client/firebase_auth_client_impl.dart';
+import 'package:firebase_auth_client/client_login_services/facebook/facebook_login_service.dart';
+import 'package:firebase_auth_client/client_login_services/google/google_login_service.dart';
+import 'package:firebase_auth_client/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
