@@ -98,6 +98,19 @@ class FirebaseAuthClientImpl implements FirebaseAuthClient {
     }
   }
 
+  Future<FirebaseUser?> getUser() async {
+    final currentUser = auth.currentUser;
+
+    if (currentUser == null) {
+      return null;
+    }
+
+    return FirebaseUser(
+      uid: currentUser.uid,
+      email: currentUser.email!,
+    );
+  }
+
   _rethrowException(FirebaseAuthException e) {
     switch (e.code) {
       case FirebaseExceptionCodes.invalidEmail:
