@@ -1,9 +1,9 @@
-import 'package:firebase_auth_client/auth_exception.dart';
-import 'package:firebase_auth_client/firebase_auth_client.dart';
-import 'package:firebase_auth_client/firebase_auth_client_impl.dart';
-import 'package:firebase_auth_client/client_login_services/facebook/facebook_login_service.dart';
-import 'package:firebase_auth_client/client_login_services/google/google_login_service.dart';
-import 'package:firebase_auth_client/strings.dart';
+import 'package:firebase_auth_client/src/auth_exception.dart';
+import 'package:firebase_auth_client/src/firebase_auth_client.dart';
+import 'package:firebase_auth_client/src/firebase_auth_client_impl.dart';
+import 'package:firebase_auth_client/src/client_login_services/facebook/facebook_login_service.dart';
+import 'package:firebase_auth_client/src/client_login_services/google/google_login_service.dart';
+import 'package:firebase_auth_client/src/firebase_auth_strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -63,8 +63,8 @@ void main() {
                 email: '',
                 password: '123456',
               ),
-          throwsA(isA<AuthEmailException>()
-              .having((e) => e.error, 'message', Strings.emptyEmail)));
+          throwsA(isA<AuthEmailException>().having(
+              (e) => e.error, 'message', FirebaseAuthStrings.emptyEmail)));
 
       verifyZeroInteractions(auth);
     });
@@ -77,8 +77,8 @@ void main() {
                 email: 'fake@mail.com',
                 password: '',
               ),
-          throwsA(isA<AuthPasswordException>()
-              .having((e) => e.error, 'message', Strings.emptyPassword)));
+          throwsA(isA<AuthPasswordException>().having(
+              (e) => e.error, 'message', FirebaseAuthStrings.emptyPassword)));
 
       verifyZeroInteractions(auth);
     });
@@ -96,8 +96,8 @@ void main() {
                 email: 'invalidmail',
                 password: 'password',
               ),
-          throwsA(isA<AuthEmailException>()
-              .having((e) => e.error, 'message', Strings.invalidEmail)));
+          throwsA(isA<AuthEmailException>().having(
+              (e) => e.error, 'message', FirebaseAuthStrings.invalidEmail)));
     });
 
     test(
@@ -113,8 +113,8 @@ void main() {
                 email: 'fake@mail.com',
                 password: 'password',
               ),
-          throwsA(isA<AuthEmailException>()
-              .having((e) => e.error, 'message', Strings.userNotFound)));
+          throwsA(isA<AuthEmailException>().having(
+              (e) => e.error, 'message', FirebaseAuthStrings.userNotFound)));
     });
 
     test(
@@ -130,8 +130,8 @@ void main() {
                 email: 'fake@mail.com',
                 password: 'password',
               ),
-          throwsA(isA<AuthEmailException>()
-              .having((e) => e.error, 'message', Strings.emailAlreadyInUse)));
+          throwsA(isA<AuthEmailException>().having((e) => e.error, 'message',
+              FirebaseAuthStrings.emailAlreadyInUse)));
     });
 
     test(
@@ -148,8 +148,8 @@ void main() {
                 email: 'fake@mail.com',
                 password: 'password',
               ),
-          throwsA(isA<AuthPasswordException>()
-              .having((e) => e.error, 'message', Strings.invalidPassword)));
+          throwsA(isA<AuthPasswordException>().having(
+              (e) => e.error, 'message', FirebaseAuthStrings.invalidPassword)));
     });
 
     test(
@@ -165,8 +165,8 @@ void main() {
                 email: 'fake@mail.com',
                 password: 'password',
               ),
-          throwsA(isA<AuthPasswordException>()
-              .having((e) => e.error, 'message', Strings.passwordWeak)));
+          throwsA(isA<AuthPasswordException>().having(
+              (e) => e.error, 'message', FirebaseAuthStrings.passwordWeak)));
     });
   });
 
@@ -195,8 +195,8 @@ void main() {
                 email: '',
                 password: '123456',
               ),
-          throwsA(isA<AuthEmailException>()
-              .having((e) => e.error, 'message', Strings.emptyEmail)));
+          throwsA(isA<AuthEmailException>().having(
+              (e) => e.error, 'message', FirebaseAuthStrings.emptyEmail)));
 
       verifyZeroInteractions(auth);
     });
@@ -209,8 +209,8 @@ void main() {
                 email: 'fake@mail.com',
                 password: '',
               ),
-          throwsA(isA<AuthPasswordException>()
-              .having((e) => e.error, 'message', Strings.emptyPassword)));
+          throwsA(isA<AuthPasswordException>().having(
+              (e) => e.error, 'message', FirebaseAuthStrings.emptyPassword)));
 
       verifyZeroInteractions(auth);
     });
@@ -241,7 +241,7 @@ void main() {
       expect(
           () => sut.loginWithFacebook(),
           throwsA(isA<AuthException>().having((e) => e.error, 'message',
-              Strings.accountExistsWithDiferentCredentials)));
+              FirebaseAuthStrings.accountExistsWithDiferentCredentials)));
     });
 
     test('should rethrow untracked exception if throws', () {
@@ -281,8 +281,8 @@ void main() {
         'is empty', () {
       expect(
           () => sut.recoverPassword(''),
-          throwsA(isA<AuthEmailException>()
-              .having((e) => e.error, 'message', Strings.emptyEmail)));
+          throwsA(isA<AuthEmailException>().having(
+              (e) => e.error, 'message', FirebaseAuthStrings.emptyEmail)));
 
       verifyZeroInteractions(auth);
     });
@@ -322,8 +322,8 @@ void main() {
                 email: 'fake@mail.com',
                 password: 'password',
               ),
-          throwsA(isA<AuthNetworkException>()
-              .having((e) => e.error, 'message', Strings.tooManyRequest)));
+          throwsA(isA<AuthNetworkException>().having(
+              (e) => e.error, 'message', FirebaseAuthStrings.tooManyRequest)));
     });
 
     test(
@@ -339,8 +339,8 @@ void main() {
                 email: 'fake@mail.com',
                 password: 'password',
               ),
-          throwsA(isA<AuthNetworkException>()
-              .having((e) => e.error, 'message', Strings.checkConnection)));
+          throwsA(isA<AuthNetworkException>().having(
+              (e) => e.error, 'message', FirebaseAuthStrings.checkConnection)));
     });
   });
 }

@@ -1,9 +1,11 @@
-import 'package:firebase_auth_client/auth_exception.dart';
-import 'package:firebase_auth_client/firebase_auth_client.dart';
-import 'package:firebase_auth_client/client_login_services/facebook/facebook_login_service.dart';
-import 'package:firebase_auth_client/client_login_services/google/google_login_service.dart';
-import 'package:firebase_auth_client/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../firebase_auth_client.dart';
+import 'auth_exception.dart';
+import 'client_login_services/facebook/facebook_login_service.dart';
+import 'client_login_services/google/google_login_service.dart';
+import 'firebase_auth_client.dart';
+import 'firebase_auth_strings.dart';
 
 class FirebaseAuthClientImpl implements FirebaseAuthClient {
   final FirebaseAuth auth;
@@ -22,10 +24,10 @@ class FirebaseAuthClientImpl implements FirebaseAuthClient {
   }) {
     return _doAuth(() async {
       if (email.isEmpty) {
-        throw AuthEmailException(Strings.emptyEmail);
+        throw AuthEmailException(FirebaseAuthStrings.emptyEmail);
       }
       if (password.isEmpty) {
-        throw AuthPasswordException(Strings.emptyPassword);
+        throw AuthPasswordException(FirebaseAuthStrings.emptyPassword);
       }
       await auth.signInWithEmailAndPassword(email: email, password: password);
     });
@@ -64,7 +66,7 @@ class FirebaseAuthClientImpl implements FirebaseAuthClient {
   Future<void> recoverPassword(String email) async {
     return _doAuth(() async {
       if (email.isEmpty) {
-        throw AuthEmailException(Strings.emptyEmail);
+        throw AuthEmailException(FirebaseAuthStrings.emptyEmail);
       }
       await auth.sendPasswordResetEmail(email: email);
     });
@@ -77,10 +79,10 @@ class FirebaseAuthClientImpl implements FirebaseAuthClient {
   }) {
     return _doAuth(() async {
       if (email.isEmpty) {
-        throw AuthEmailException(Strings.emptyEmail);
+        throw AuthEmailException(FirebaseAuthStrings.emptyEmail);
       }
       if (password.isEmpty) {
-        throw AuthPasswordException(Strings.emptyPassword);
+        throw AuthPasswordException(FirebaseAuthStrings.emptyPassword);
       }
       await auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -114,21 +116,22 @@ class FirebaseAuthClientImpl implements FirebaseAuthClient {
   _rethrowException(FirebaseAuthException e) {
     switch (e.code) {
       case FirebaseExceptionCodes.invalidEmail:
-        throw AuthEmailException(Strings.invalidEmail);
+        throw AuthEmailException(FirebaseAuthStrings.invalidEmail);
       case FirebaseExceptionCodes.userNotFound:
-        throw AuthEmailException(Strings.userNotFound);
+        throw AuthEmailException(FirebaseAuthStrings.userNotFound);
       case FirebaseExceptionCodes.emailAlreadyInUse:
-        throw AuthEmailException(Strings.emailAlreadyInUse);
+        throw AuthEmailException(FirebaseAuthStrings.emailAlreadyInUse);
       case FirebaseExceptionCodes.wrongPassword:
-        throw AuthPasswordException(Strings.invalidPassword);
+        throw AuthPasswordException(FirebaseAuthStrings.invalidPassword);
       case FirebaseExceptionCodes.weakPassword:
-        throw AuthPasswordException(Strings.passwordWeak);
+        throw AuthPasswordException(FirebaseAuthStrings.passwordWeak);
       case FirebaseExceptionCodes.tooManyRequests:
-        throw AuthNetworkException(Strings.tooManyRequest);
+        throw AuthNetworkException(FirebaseAuthStrings.tooManyRequest);
       case FirebaseExceptionCodes.networkRequestFailed:
-        throw AuthNetworkException(Strings.checkConnection);
+        throw AuthNetworkException(FirebaseAuthStrings.checkConnection);
       case FirebaseExceptionCodes.accountExistsWithDifferentCredential:
-        throw AuthException(Strings.accountExistsWithDiferentCredentials);
+        throw AuthException(
+            FirebaseAuthStrings.accountExistsWithDiferentCredentials);
       default:
         throw AuthException(e.message);
     }

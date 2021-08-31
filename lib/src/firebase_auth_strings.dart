@@ -1,4 +1,4 @@
-class Strings {
+class FirebaseAuthStrings {
   static final String invalidPassword = 'invalidPassword';
   static final String invalidEmail = 'invalidEmail';
   static final String emptyEmail = 'emptyEmail';
