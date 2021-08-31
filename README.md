@@ -1,4 +1,4 @@
-# auth_repository
+# firebase_auth_client
 
 A new Flutter package project.
 
