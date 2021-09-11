@@ -4,14 +4,14 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class FacebookAuthMock extends Mock implements FacebookAuth {}
+class MockFacebookAuth extends Mock implements FacebookAuth {}
 
 main() {
   late FacebookLoginService sut;
-  late FacebookAuthMock facebookAuth;
+  late FacebookAuth facebookAuth;
 
   setUp(() {
-    facebookAuth = FacebookAuthMock();
+    facebookAuth = MockFacebookAuth();
     sut = FacebookLoginServiceImpl(facebookAuth);
   });
 

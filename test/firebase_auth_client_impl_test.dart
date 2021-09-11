@@ -10,24 +10,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class FirebaseAuthMock extends Mock implements FirebaseAuth {}
+class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
-class FacebookLoginServiceMock extends Mock implements FacebookLoginService {}
+class MockFacebookLoginService extends Mock implements FacebookLoginService {}
 
-class GoogleLoginServiceMock extends Mock implements GoogleLoginService {}
+class MockGoogleLoginService extends Mock implements GoogleLoginService {}
 
-class UserCredentialMock extends Mock implements UserCredential {}
+class MockUserCredential extends Mock implements UserCredential {}
 
 void main() {
   late FirebaseAuthClient sut;
-  late FirebaseAuthMock auth;
-  late FacebookLoginServiceMock facebookLoginService;
-  late GoogleLoginServiceMock googleLoginService;
+  late FirebaseAuth auth;
+  late FacebookLoginService facebookLoginService;
+  late GoogleLoginService googleLoginService;
 
   setUp(() {
-    auth = FirebaseAuthMock();
-    facebookLoginService = FacebookLoginServiceMock();
-    googleLoginService = GoogleLoginServiceMock();
+    auth = MockFirebaseAuth();
+    facebookLoginService = MockFacebookLoginService();
+    googleLoginService = MockGoogleLoginService();
 
     sut = FirebaseAuthClientImpl(
         auth: auth,
@@ -45,7 +45,7 @@ void main() {
         () async {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
-          .thenAnswer((_) async => UserCredentialMock());
+          .thenAnswer((_) async => MockUserCredential());
       await sut.loginWithEmailAndPassword(
         email: 'fake@mail.com',
         password: '123456',
@@ -177,7 +177,7 @@ void main() {
         () async {
       when(() => auth.createUserWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
-          .thenAnswer((_) async => UserCredentialMock());
+          .thenAnswer((_) async => MockUserCredential());
       await sut.registerWithEmailAndPassword(
         email: 'fake@mail.com',
         password: '123456',
@@ -224,7 +224,7 @@ void main() {
       when(() => facebookLoginService.login())
           .thenAnswer((_) async => loginResult);
       when(() => auth.signInWithCredential(any()))
-          .thenAnswer((_) async => UserCredentialMock());
+          .thenAnswer((_) async => MockUserCredential());
 
       await sut.loginWithFacebook();
 
@@ -260,7 +260,7 @@ void main() {
       when(() => googleLoginService.login())
           .thenAnswer((_) async => loginResult);
       when(() => auth.signInWithCredential(any()))
-          .thenAnswer((_) async => UserCredentialMock());
+          .thenAnswer((_) async => MockUserCredential());
 
       await sut.loginWithGoogle();
 
