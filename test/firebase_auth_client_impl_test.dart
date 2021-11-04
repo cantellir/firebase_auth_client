@@ -1,11 +1,10 @@
-import 'package:firebase_auth_client/src/auth_exception.dart';
+import 'package:firebase_auth_client/src/firebase_auth_client_exception.dart';
 import 'package:firebase_auth_client/src/client_login_services/facebook/facebook_login_result.dart';
 import 'package:firebase_auth_client/src/client_login_services/google/google_login_result.dart';
 import 'package:firebase_auth_client/src/firebase_auth_client.dart';
 import 'package:firebase_auth_client/src/firebase_auth_client_impl.dart';
 import 'package:firebase_auth_client/src/client_login_services/facebook/facebook_login_service.dart';
 import 'package:firebase_auth_client/src/client_login_services/google/google_login_service.dart';
-import 'package:firebase_auth_client/src/firebase_auth_strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -41,7 +40,7 @@ void main() {
   });
 
   group('login with email and password', () {
-    test('should pass with correct email and password if no error occurs',
+    test('should pass with correct email and password when no error occurs',
         () async {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
@@ -57,37 +56,31 @@ void main() {
       verifyNoMoreInteractions(auth);
     });
 
-    test(
-        'should trhow AuthEmailException with correct message if e-mail '
-        'is empty', () {
+    test('should trhow EmptyEmailException when e-mail is empty', () {
       expect(
           () => sut.loginWithEmailAndPassword(
                 email: '',
                 password: '123456',
               ),
-          throwsA(isA<AuthEmailException>().having(
-              (e) => e.error, 'message', FirebaseAuthStrings.emptyEmail)));
+          throwsA(isA<EmptyEmailException>()));
 
       verifyZeroInteractions(auth);
     });
 
-    test(
-        'should trhow AuthPasswordException with correct message if e-mail '
-        'is empty', () {
+    test('should trhow EmptyPasswordException when password is empty', () {
       expect(
           () => sut.loginWithEmailAndPassword(
                 email: 'fake@mail.com',
                 password: '',
               ),
-          throwsA(isA<AuthPasswordException>().having(
-              (e) => e.error, 'message', FirebaseAuthStrings.emptyPassword)));
+          throwsA(isA<EmptyPasswordException>()));
 
       verifyZeroInteractions(auth);
     });
 
     test(
-        'should throw AuthEmailException with correct message if firebase '
-        'throws invalid email', () {
+        'should throw InvalidEmailException when '
+        'firebase throws invalid email', () {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
           .thenThrow(
@@ -98,13 +91,12 @@ void main() {
                 email: 'invalidmail',
                 password: 'password',
               ),
-          throwsA(isA<AuthEmailException>().having(
-              (e) => e.error, 'message', FirebaseAuthStrings.invalidEmail)));
+          throwsA(isA<InvalidEmailException>()));
     });
 
     test(
-        'should throw AuthEmailException with correct message if firebase '
-        'throws user not found', () {
+        'should throw UserNotFoundException when '
+        'firebase throws user not found', () {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
           .thenThrow(
@@ -115,13 +107,12 @@ void main() {
                 email: 'fake@mail.com',
                 password: 'password',
               ),
-          throwsA(isA<AuthEmailException>().having(
-              (e) => e.error, 'message', FirebaseAuthStrings.userNotFound)));
+          throwsA(isA<UserNotFoundException>()));
     });
 
     test(
-        'should throw AuthEmailException with correct message if firebase '
-        'throws email already in use', () {
+        'should throw EmailAlreadyInUseException when '
+        'firebase throws email already in use', () {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
           .thenThrow(FirebaseAuthException(
@@ -132,43 +123,37 @@ void main() {
                 email: 'fake@mail.com',
                 password: 'password',
               ),
-          throwsA(isA<AuthEmailException>().having((e) => e.error, 'message',
-              FirebaseAuthStrings.emailAlreadyInUse)));
+          throwsA(isA<EmailAlreadyInUseException>()));
     });
 
     test(
-        'should throw AuthPasswordException with correct message if firebase '
-        'throws wrong password', () {
-      when(() =>
-          auth.signInWithEmailAndPassword(
-              email: any(named: 'email'),
-              password: any(named: 'password'))).thenThrow(
-          FirebaseAuthException(code: FirebaseExceptionCodes.wrongPassword));
-
-      expect(
-          () => sut.loginWithEmailAndPassword(
-                email: 'fake@mail.com',
-                password: 'password',
-              ),
-          throwsA(isA<AuthPasswordException>().having(
-              (e) => e.error, 'message', FirebaseAuthStrings.invalidPassword)));
-    });
-
-    test(
-        'should throw AuthPasswordException with correct message if firebase '
-        'throws weak password', () {
+        'should throw WrongPasswordException when '
+        'firebase throws wrong password', () {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
-          .thenThrow(
-              FirebaseAuthException(code: FirebaseExceptionCodes.weakPassword));
+          .thenThrow(WrongPasswordException());
 
       expect(
           () => sut.loginWithEmailAndPassword(
                 email: 'fake@mail.com',
                 password: 'password',
               ),
-          throwsA(isA<AuthPasswordException>().having(
-              (e) => e.error, 'message', FirebaseAuthStrings.passwordWeak)));
+          throwsA(isA<WrongPasswordException>()));
+    });
+
+    test(
+        'should throw WeakPasswordException when '
+        'firebase throws weak password', () {
+      when(() => auth.signInWithEmailAndPassword(
+          email: any(named: 'email'),
+          password: any(named: 'password'))).thenThrow(WeakPasswordException());
+
+      expect(
+          () => sut.loginWithEmailAndPassword(
+                email: 'fake@mail.com',
+                password: 'password',
+              ),
+          throwsA(isA<WeakPasswordException>()));
     });
   });
 
@@ -189,30 +174,24 @@ void main() {
       verifyNoMoreInteractions(auth);
     });
 
-    test(
-        'should trhow AuthEmailException with correct message if e-mail '
-        'is empty', () {
+    test('should trhow EmptyEmailException when e-mail is empty', () {
       expect(
           () => sut.registerWithEmailAndPassword(
                 email: '',
                 password: '123456',
               ),
-          throwsA(isA<AuthEmailException>().having(
-              (e) => e.error, 'message', FirebaseAuthStrings.emptyEmail)));
+          throwsA(isA<EmptyEmailException>()));
 
       verifyZeroInteractions(auth);
     });
 
-    test(
-        'should trhow AuthPasswordException with correct message if e-mail '
-        'is empty', () {
+    test('should trhow EmptyPasswordException when e-mail is empty', () {
       expect(
           () => sut.registerWithEmailAndPassword(
                 email: 'fake@mail.com',
                 password: '',
               ),
-          throwsA(isA<AuthPasswordException>().having(
-              (e) => e.error, 'message', FirebaseAuthStrings.emptyPassword)));
+          throwsA(isA<EmptyPasswordException>()));
 
       verifyZeroInteractions(auth);
     });
@@ -235,15 +214,13 @@ void main() {
     });
 
     test(
-        'should throw AuthException with correct message if throws '
-        'account exists with different credential', () {
-      when(() => facebookLoginService.login()).thenThrow(FirebaseAuthException(
-          code: FirebaseExceptionCodes.accountExistsWithDifferentCredential));
+        'should throw AccountWithAnotherCredentialsException when '
+        'firebase throws account exists with different credential', () {
+      when(() => facebookLoginService.login())
+          .thenThrow(AccountWithDifferentCredentialsException());
 
-      expect(
-          () => sut.loginWithFacebook(),
-          throwsA(isA<AuthException>().having((e) => e.error, 'message',
-              FirebaseAuthStrings.accountExistsWithDiferentCredentials)));
+      expect(() => sut.loginWithFacebook(),
+          throwsA(isA<AccountWithDifferentCredentialsException>()));
     });
 
     test('should rethrow untracked exception if throws', () {
@@ -278,13 +255,9 @@ void main() {
   });
 
   group('recover password tests', () {
-    test(
-        'should trhow AuthEmailException with correct message if e-mail '
-        'is empty', () {
+    test('should trhow EmptyEmailException when e-mail is empty', () {
       expect(
-          () => sut.recoverPassword(''),
-          throwsA(isA<AuthEmailException>().having(
-              (e) => e.error, 'message', FirebaseAuthStrings.emptyEmail)));
+          () => sut.recoverPassword(''), throwsA(isA<EmptyEmailException>()));
 
       verifyZeroInteractions(auth);
     });
@@ -311,38 +284,33 @@ void main() {
 
   group('connection error tests', () {
     test(
-        'should throw AuthNetworkException with correct message if firebase '
-        'throws too many requests', () {
-      when(() =>
-          auth.signInWithEmailAndPassword(
-              email: any(named: 'email'),
-              password: any(named: 'password'))).thenThrow(
-          FirebaseAuthException(code: FirebaseExceptionCodes.tooManyRequests));
+        'should throw TooManyRequestsException when '
+        'firebase throws too many requests', () {
+      when(() => auth.signInWithEmailAndPassword(
+              email: any(named: 'email'), password: any(named: 'password')))
+          .thenThrow(TooManyRequestsException());
 
       expect(
           () => sut.loginWithEmailAndPassword(
                 email: 'fake@mail.com',
                 password: 'password',
               ),
-          throwsA(isA<AuthNetworkException>().having(
-              (e) => e.error, 'message', FirebaseAuthStrings.tooManyRequest)));
+          throwsA(isA<TooManyRequestsException>()));
     });
 
     test(
-        'should throw AuthNetworkException with correct message if firebase '
-        'throws network request failed', () {
+        'should throw NetworkRequestException when '
+        'firebase throws network request failed', () {
       when(() => auth.signInWithEmailAndPassword(
               email: any(named: 'email'), password: any(named: 'password')))
-          .thenThrow(FirebaseAuthException(
-              code: FirebaseExceptionCodes.networkRequestFailed));
+          .thenThrow(NetworkRequestException());
 
       expect(
           () => sut.loginWithEmailAndPassword(
                 email: 'fake@mail.com',
                 password: 'password',
               ),
-          throwsA(isA<AuthNetworkException>().having(
-              (e) => e.error, 'message', FirebaseAuthStrings.checkConnection)));
+          throwsA(isA<NetworkRequestException>()));
     });
   });
 }
