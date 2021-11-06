@@ -94,8 +94,6 @@ class FirebaseAuthClientImpl implements FirebaseAuthClient {
       return;
     } on FirebaseAuthException catch (e) {
       _rethrowException(e);
-    } catch (e) {
-      rethrow;
     }
   }
 
