@@ -56,28 +56,6 @@ void main() {
       verifyNoMoreInteractions(auth);
     });
 
-    test('should trhow EmptyEmailException when e-mail is empty', () {
-      expect(
-          () => sut.loginWithEmailAndPassword(
-                email: '',
-                password: '123456',
-              ),
-          throwsA(isA<EmptyEmailException>()));
-
-      verifyZeroInteractions(auth);
-    });
-
-    test('should trhow EmptyPasswordException when password is empty', () {
-      expect(
-          () => sut.loginWithEmailAndPassword(
-                email: 'fake@mail.com',
-                password: '',
-              ),
-          throwsA(isA<EmptyPasswordException>()));
-
-      verifyZeroInteractions(auth);
-    });
-
     test(
         'should throw InvalidEmailException when '
         'firebase throws invalid email', () {
@@ -173,28 +151,6 @@ void main() {
 
       verifyNoMoreInteractions(auth);
     });
-
-    test('should trhow EmptyEmailException when e-mail is empty', () {
-      expect(
-          () => sut.registerWithEmailAndPassword(
-                email: '',
-                password: '123456',
-              ),
-          throwsA(isA<EmptyEmailException>()));
-
-      verifyZeroInteractions(auth);
-    });
-
-    test('should trhow EmptyPasswordException when e-mail is empty', () {
-      expect(
-          () => sut.registerWithEmailAndPassword(
-                email: 'fake@mail.com',
-                password: '',
-              ),
-          throwsA(isA<EmptyPasswordException>()));
-
-      verifyZeroInteractions(auth);
-    });
   });
 
   group('login with facebook', () {
@@ -255,13 +211,6 @@ void main() {
   });
 
   group('recover password tests', () {
-    test('should trhow EmptyEmailException when e-mail is empty', () {
-      expect(
-          () => sut.recoverPassword(''), throwsA(isA<EmptyEmailException>()));
-
-      verifyZeroInteractions(auth);
-    });
-
     test('should pass with correct email if no error occurs', () async {
       when(() => auth.sendPasswordResetEmail(email: any(named: 'email')))
           .thenAnswer((_) async => null);

@@ -22,12 +22,6 @@ class FirebaseAuthClientImpl implements FirebaseAuthClient {
     required String password,
   }) {
     return _doAuth(() async {
-      if (email.isEmpty) {
-        throw EmptyEmailException();
-      }
-      if (password.isEmpty) {
-        throw EmptyPasswordException();
-      }
       await auth.signInWithEmailAndPassword(email: email, password: password);
     });
   }
@@ -64,9 +58,6 @@ class FirebaseAuthClientImpl implements FirebaseAuthClient {
   @override
   Future<void> recoverPassword(String email) async {
     return _doAuth(() async {
-      if (email.isEmpty) {
-        throw EmptyEmailException();
-      }
       await auth.sendPasswordResetEmail(email: email);
     });
   }
@@ -77,12 +68,6 @@ class FirebaseAuthClientImpl implements FirebaseAuthClient {
     required String password,
   }) {
     return _doAuth(() async {
-      if (email.isEmpty) {
-        throw EmptyEmailException();
-      }
-      if (password.isEmpty) {
-        throw EmptyPasswordException();
-      }
       await auth.createUserWithEmailAndPassword(
           email: email, password: password);
     });
