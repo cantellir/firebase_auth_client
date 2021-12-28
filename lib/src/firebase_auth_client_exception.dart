@@ -1,14 +1,10 @@
 class FirebaseAuthClientException {}
 
-class EmptyEmailException extends FirebaseAuthClientException {}
-
 class InvalidEmailException extends FirebaseAuthClientException {}
 
 class UserNotFoundException extends FirebaseAuthClientException {}
 
 class EmailAlreadyInUseException extends FirebaseAuthClientException {}
-
-class EmptyPasswordException extends FirebaseAuthClientException {}
 
 class WrongPasswordException extends FirebaseAuthClientException {}
 
